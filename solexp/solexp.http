@@ -1,0 +1,6 @@
+@solexp_HostAddress = http://localhost:5044
+
+GET {{solexp_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
