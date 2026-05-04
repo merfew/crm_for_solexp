@@ -22,7 +22,14 @@ namespace solexp.Controllers
 
         private int GetCurrentClientId()
         {
-            return int.Parse(User.FindFirst(ClaimTypes.UserData)?.Value ?? "0");
+            return int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+        }
+
+        [HttpGet("courses")]
+        public async Task<IActionResult> GetAllCours()
+        {
+            var courses = await _clientService.GetCoursesAsync();
+            return Ok(courses);
         }
 
         // ═══════════════════════════════════════════════════════════════
@@ -271,7 +278,7 @@ namespace solexp.Controllers
             try
             {
                 var clientId = GetCurrentClientId();
-                _logger.LogInformation($"Ищем клиента с ID: {clientId}");
+                //_logger.LogInformation($"Ищем клиента с ID: {clientId}");
                 var client = await _clientService.GetPersonalDataAsync(clientId);
                 if (client == null) return NotFound("Клиент не найден");
                 return Ok(client);

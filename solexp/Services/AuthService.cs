@@ -66,7 +66,7 @@ namespace solexp.Services
                     break;
             }
 
-            var token = _jwtService.GenerateToken(user.email, role.role_name, user.id_user, roleSpecificId);
+            var token = _jwtService.GenerateToken(user.email, role.role_name, roleSpecificId);
 
             return new AuthResponseDto
             {

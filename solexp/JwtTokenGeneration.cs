@@ -35,14 +35,15 @@ namespace solexp
             }
         }
 
-        public string GenerateToken(string? username, string? role, int userId, int roleId)
+        public string GenerateToken(string? username, string? role, int roleId)
         {
             var claims = new List<Claim>
         {
             new Claim(ClaimTypes.Name, username),
             new Claim(ClaimTypes.Role, role),
-            new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
-            new Claim(ClaimTypes.UserData, roleId.ToString()),
+            new Claim(ClaimTypes.NameIdentifier, roleId.ToString()),
+            //new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
+            //new Claim(ClaimTypes.UserData, roleId.ToString()),
             new Claim(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64)
         };
 
@@ -58,6 +59,6 @@ namespace solexp
     }
     public interface IJwtTokenGenerator
     {
-        string GenerateToken(string? username, string? role, int userId, int roleId);
+        string GenerateToken(string? username, string? role, int roleId);
     }
 }

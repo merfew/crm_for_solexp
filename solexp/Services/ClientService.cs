@@ -122,6 +122,16 @@ namespace solexp.Services
 
             return await _lessonStudentRepository.GetByStudentIdAsync(studentId);
         }
+
+        // ═══════════════════════════════════════════════════════════════
+        // ПОЛУЧЕНИЕ КУРСОВ
+        // ═══════════════════════════════════════════════════════════════
+
+        public async Task<IEnumerable<Cours>> GetCoursesAsync()
+        {
+            return await _coursRepository.GetAllAsync();
+        }
+
         // ═══════════════════════════════════════════════════════════════
         // ПОЛУЧЕНИЕ СТУДЕНТОВ КЛИЕНТА
         // ═══════════════════════════════════════════════════════════════

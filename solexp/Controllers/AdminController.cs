@@ -66,7 +66,7 @@ namespace solexp.Controllers
             }
         }
 
-        [HttpPut("teachers/{teacherId}")]
+        [HttpPatch("teachers/{teacherId}")]
         public async Task<IActionResult> UpdateTeacher(int teacherId, [FromBody] UpdateTeacherDto dto)
         {
             try
@@ -209,6 +209,13 @@ namespace solexp.Controllers
         }
 
         // ========== ”œ–¿¬À≈Õ»≈  ”–—¿Ã» ==========
+
+        [HttpGet("courses")]
+        public async Task<IActionResult> GetAllCours()
+        {
+            var courses = await _adminService.GetAllCoursesAsync();
+            return Ok(courses);
+        }
 
         [HttpPost("courses")]
         public async Task<IActionResult> CreateCourse([FromBody] CreateCourseDto dto)

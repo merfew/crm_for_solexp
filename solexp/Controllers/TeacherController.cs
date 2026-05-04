@@ -23,7 +23,7 @@ namespace solexp.Controllers
         // Получаем ID текущего преподавателя из токена/claims
         private int GetCurrentTeacherId()
         {
-            return int.Parse(User.FindFirst(ClaimTypes.UserData)?.Value ?? "0");
+            return int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
             //var userIdClaim = User.FindFirst("id_user")?.Value
             //    ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 

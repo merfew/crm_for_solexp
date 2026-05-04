@@ -10,6 +10,10 @@ namespace solexp.Services
 
         Task<IEnumerable<Student>> GetStudentsByClientIdAsync(int clientId);
 
+        // Получение курсов
+
+        Task<IEnumerable<Cours>> GetCoursesAsync();
+
         // Запись на занятия
         Task<Lesson_student> EnrollStudentAsync(int clientId, int studentId, int lessonId);
         Task<bool> CancelEnrollmentAsync(int lessonId, int studentId, int clientId);

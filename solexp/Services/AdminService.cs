@@ -126,7 +126,7 @@ namespace solexp.Services
 
         public async Task UpdateTeacherAccountAsync(int teacherId, UpdateTeacherDto dto)
         {
-            var teacher = await _teacherRepository.GetByUserIdAsync(teacherId);
+            var teacher = await _teacherRepository.GetByIdAsync(teacherId);
             if (teacher == null)
                 throw new InvalidOperationException("Педагог не найден");
 
@@ -192,7 +192,7 @@ namespace solexp.Services
             await _clientRepository.CreateAsync(client);
 
             // Если указаны данные студента, создаем его
-            if (dto.Student != null)
+            if (dto.Student != null && !string.IsNullOrWhiteSpace(dto.Student.FullName) && dto.Student.BirthDate.HasValue)
             {
                 var student = new Student
                 {
