@@ -1,0 +1,32 @@
+/* src/pages/Students/StudentsPage.module.css */
+.page {
+  min-height: calc(100vh - 200px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.placeholder {
+  text-align: center;
+  padding: 48px;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+.icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.placeholder h2 {
+  color: #2D3142;
+  margin: 0 0 8px 0;
+  font-size: 24px;
+}
+
+.placeholder p {
+  color: #9197AA;
+  margin: 0;
+}

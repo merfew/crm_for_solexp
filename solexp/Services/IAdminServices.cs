@@ -27,6 +27,7 @@ namespace solexp.Services
         Task<IEnumerable<TeacherListItemDto>> GetAllTeachersAsync();
 
         // Управление расписанием (занятиями)
+        Task<Lesson> GetLessonAsync(int lessonId);
         Task<Lesson> CreateLessonAsync(CreateLessonDto dto);
         Task UpdateLessonAsync(int lessonId, UpdateLessonDto dto);
         Task DeleteLessonAsync(int lessonId);

@@ -154,6 +154,9 @@ namespace solexp.Migrations
                     b.Property<DateTime?>("lesson_date")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<int?>("number_in_course")
+                        .HasColumnType("integer");
+
                     b.Property<string>("status")
                         .HasColumnType("text");
 

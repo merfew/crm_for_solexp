@@ -1,0 +1,1897 @@
+/* src/pages/Calendar/CalendarPage.module.css */
+
+.container {
+  padding: 24px;
+  max-width: 1920px;
+  margin: 0 auto;
+  height: 85vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* --- ХЕДЕР И НАВИГАЦИЯ (обычный, не фиксированный) --- */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 24px;
+  background: white;
+  padding: 16px 24px;
+  border-radius: 20px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+.navSection {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a1a2e;
+  background: #f0f2f5;
+  padding: 8px 20px;
+  border-radius: 40px;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.navBtn {
+  padding: 8px 16px;
+  border: 1px solid #e0e0e0;
+  background: white;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #555;
+  font-size: 16px;
+}
+
+.navBtn:hover {
+  background: linear-gradient(135deg, #f7b557 0%, #e27921 100%);
+  border-color: #f7b557;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(247, 181, 87, 0.3);
+}
+
+/* --- ФИЛЬТРЫ --- */
+.filtersSection {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.filterWrapper {
+  position: relative;
+  z-index: 20;
+}
+
+.filterTrigger {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 180px;
+}
+
+.filterTrigger:hover {
+  border-color: #f7b557;
+  box-shadow: 0 2px 8px rgba(247, 181, 87, 0.15);
+  transform: translateY(-1px);
+}
+
+.filterIcon {
+  width: 18px;
+  height: 18px;
+  color: #f7b557;
+}
+
+.filterText {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1a1a2e;
+}
+
+.chevronIcon {
+  width: 16px;
+  height: 16px;
+  color: #888;
+  transition: transform 0.2s;
+}
+
+/* Выпадающий список */
+.dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  max-height: 300px;
+  overflow-y: auto;
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdownItem {
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 14px;
+  color: #555;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dropdownItem:hover {
+  background: #fff8f0;
+  color: #e27921;
+}
+
+.dropdownItem.active {
+  background: linear-gradient(135deg, #fef5e8 0%, #fff8f0 100%);
+  color: #e27921;
+  font-weight: 500;
+  border-left: 3px solid #f7b557;
+}
+
+.dropdownItem.active::before {
+  content: "✓";
+  margin-right: 8px;
+  color: #f7b557;
+  font-weight: bold;
+}
+
+/* Кнопка сброса фильтров */
+.clearFiltersBtn {
+  padding: 8px 16px;
+  background: #fff0f0;
+  border: 1px solid #ffcdd2;
+  border-radius: 10px;
+  color: #c62828;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.clearFiltersBtn:hover {
+  background: #ffebee;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(198, 40, 40, 0.2);
+}
+
+/* --- ОШИБКИ --- */
+.error {
+  background: #fff0f0;
+  border: 1px solid #ffcdd2;
+  border-radius: 12px;
+  padding: 12px 20px;
+  color: #c62828;
+  margin-bottom: 24px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.error::before {
+  content: "⚠️";
+  font-size: 16px;
+}
+
+/* --- КОНТЕЙНЕР С ПРОКРУТКОЙ ДЛЯ КАЛЕНДАРЯ --- */
+.calendarWrapper {
+  flex: 1;
+  overflow: auto;
+  border-radius: 20px;
+  scroll-behavior: smooth;
+  position: relative;
+}
+
+/* Кастомный скроллбар */
+.calendarWrapper::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.calendarWrapper::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.calendarWrapper::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #f7b557 0%, #e27921 100%);
+  border-radius: 10px;
+}
+
+.calendarWrapper::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #e27921 0%, #f7b557 100%);
+}
+
+/* --- СЕТКА КАЛЕНДАРЯ --- */
+.grid {
+  background: white;
+  border-radius: 20px;
+  border: 1px solid #f0f0f0;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+  min-width: 900px;
+  display: table;
+  width: 100%;
+}
+
+/* Заголовки дней - фиксируются при скролле */
+.gridHeader {
+  display: grid;
+  grid-template-columns: 80px repeat(7, 1fr);
+  background: #fafbfc;
+  border-bottom: 2px solid #eef2f6;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.dayHeader {
+  padding: 16px 8px;
+  text-align: center;
+  border-left: 1px solid #f0f0f0;
+  transition: all 0.2s;
+  background-color: #fafbfc;
+}
+
+.dayHeader:first-child {
+  border-left: none;
+}
+
+.dayHeaderToday {
+  background: linear-gradient(135deg, #fff3e0 0%, #fffaee 100%);
+  position: relative;
+}
+
+.dayHeaderToday .weekday,
+.dayHeaderToday .dayNumber {
+  color: #e27921;
+  font-weight: bold;
+}
+
+.weekday {
+  font-size: 13px;
+  color: #888;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.dayNumber {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a1a2e;
+}
+
+.todayBadge {
+  font-size: 10px;
+  background: #f7b557;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  display: inline-block;
+  margin-top: 6px;
+  font-weight: 500;
+}
+
+/* Контейнер для строк с прокруткой */
+.gridBody {
+  display: block;
+  max-height: calc(100vh - 300px);
+  overflow-y: auto;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 80px repeat(7, 1fr);
+  min-height: 100px;
+  transition: background 0.1s;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.row:hover {
+  background: #fefcf8;
+}
+
+/* Колонка со временем */
+.time {
+  padding: 12px 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #888;
+  background: #fafbfc;
+  border-right: 1px solid #f0f0f0;
+  border-bottom: none;
+  text-align: center;
+  position: sticky;
+  left: 0;
+  z-index: 5;
+}
+
+.cell {
+  border-right: 1px solid #f0f0f0;
+  border-bottom: none;
+  padding: 8px;
+  vertical-align: top;
+  background: white;
+  transition: all 0.2s;
+  min-height: 90px;
+}
+
+.cell:hover {
+  background: #fefaf5;
+}
+
+.cellToday {
+  background: #fffef7;
+  border-left: 3px solid #f7b557;
+}
+
+/* --- КАРТОЧКА УРОКА --- */
+.lesson {
+  background: linear-gradient(135deg, #fef5e8 0%, #fff8f0 100%);
+  border-left: 4px solid #f7b557;
+  padding: 8px 10px;
+  border-radius: 10px;
+  margin-bottom: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.lesson:hover {
+  transform: translateX(2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  background: linear-gradient(135deg, #fff3e0 0%, #fffaee 100%);
+}
+
+.lessonTitle {
+  font-weight: 700;
+  font-size: 13px;
+  color: #1a1a2e;
+  margin-bottom: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lessonMeta {
+  color: #666;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.metaIcon {
+  width: 12px;
+  height: 12px;
+  color: #f7b557;
+}
+
+.classroomIcon {
+  font-size: 11px;
+}
+
+/* --- ЛОУДЕР --- */
+.loader {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 40px;
+  background: white;
+  border-radius: 60px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  color: #f7b557;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+/* ===== КНОПКА СОЗДАНИЯ ЗАНЯТИЯ ===== */
+.createLessonBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #f7b557 0%, #e27921 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.createLessonBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(226, 121, 33, 0.3);
+}
+
+.btnIcon {
+  width: 18px;
+  height: 18px;
+}
+
+.btnIconSmall {
+  width: 16px;
+  height: 16px;
+}
+
+/* Модальное окно */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal {
+  background: white;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.modalHeader h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a1a2e;
+}
+
+.modalClose {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: none;
+  background: #f5f5f5;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.modalClose:hover {
+  background: #e0e0e0;
+  color: #333;
+}
+
+.modalBody {
+  padding: 24px;
+}
+
+.iconSmall {
+  width: 16px;
+  height: 16px;
+}
+
+/* Форма */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.formGroup label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #555;
+}
+
+.fieldHint {
+  font-size: 11px;
+  color: #999;
+  font-style: italic;
+}
+
+.input,
+.select,
+.textarea {
+  padding: 10px 14px;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.2s;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.input:focus,
+.select:focus,
+.textarea:focus {
+  border-color: #f7b557;
+  box-shadow: 0 0 0 2px rgba(247, 181, 87, 0.2);
+}
+
+.input:disabled,
+.select:disabled {
+  background: #f5f5f5;
+  color: #999;
+  cursor: not-allowed;
+}
+
+.textarea {
+  min-height: 80px;
+}
+
+.formActions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.submitBtn {
+  flex: 1;
+  padding: 12px;
+  background: linear-gradient(135deg, #f7b557 0%, #e27921 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.submitBtn:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.submitBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.cancelBtn {
+  flex: 1;
+  padding: 12px;
+  background: #f5f5f5;
+  color: #666;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cancelBtn:hover {
+  background: #e0e0e0;
+}
+
+/* ===== ДЕТАЛЬНЫЙ ПРОСМОТР ЗАНЯТИЯ ===== */
+.lessonDetail {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.detailSection {
+  background: #fafbfc;
+  border-radius: 14px;
+  padding: 16px;
+}
+
+.detailSectionTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 14px 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1a1a2e;
+}
+
+.sectionIcon {
+  width: 18px;
+  height: 18px;
+  color: #f7b557;
+}
+
+.detailRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid #eef2f6;
+}
+
+.detailRow:last-child {
+  border-bottom: none;
+}
+
+.detailIcon {
+  width: 18px;
+  height: 18px;
+  color: #f7b557;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.detailContent {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.detailLabel {
+  font-size: 12px;
+  color: #888;
+  font-weight: 500;
+}
+
+.detailValue {
+  font-size: 14px;
+  color: #1a1a2e;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+/* Список студентов */
+.studentsLoading,
+.studentsEmpty {
+  text-align: center;
+  padding: 20px;
+  color: #888;
+  font-size: 14px;
+}
+
+.studentsList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.studentCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: white;
+  border-radius: 10px;
+  border: 1px solid #eef2f6;
+  transition: all 0.2s;
+}
+
+.studentCard:hover {
+  border-color: #f7b557;
+  box-shadow: 0 2px 8px rgba(247, 181, 87, 0.1);
+}
+
+.studentInfo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.studentIcon {
+  width: 16px;
+  height: 16px;
+  color: #888;
+}
+
+.studentName {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1a1a2e;
+}
+
+.studentStatus {
+  display: flex;
+  align-items: center;
+}
+
+.statusAttended,
+.statusAbsent,
+.statusPending {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.statusAttended {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.statusAbsent {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.statusPending {
+  background: #fff8e1;
+  color: #f57c00;
+}
+
+.statusIcon {
+  width: 14px;
+  height: 14px;
+}
+
+/* ===== ЗАПИСЬ НА ЗАНЯТИЕ (КЛИЕНТ) ===== */
+.enrollError {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: #fff0f0;
+  border: 1px solid #ffcdd2;
+  border-radius: 8px;
+  color: #c62828;
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+.enrollErrorIcon {
+  width: 16px;
+  height: 16px;
+  color: #c62828;
+  flex-shrink: 0;
+}
+
+/* Секция записанных студентов */
+.enrolledSection {
+  margin-bottom: 16px;
+}
+
+.enrolledTitle {
+  font-size: 13px;
+  font-weight: 500;
+  color: #555;
+  margin: 0 0 10px 0;
+}
+
+.enrolledList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.enrolledStudentCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: white;
+  border-radius: 10px;
+  border: 1px solid #e8f5e9;
+  transition: all 0.2s;
+}
+
+.enrolledStudentCard:hover {
+  border-color: #66bb6a;
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.1);
+}
+
+.enrolledStudentInfo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.enrolledStudentIcon {
+  width: 16px;
+  height: 16px;
+  color: #66bb6a;
+}
+
+.enrolledStudentName {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1a1a2e;
+}
+
+.enrolledBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  background: #e8f5e9;
+  color: #2e7d32;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.cancelEnrollBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: #fff0f0;
+  color: #c62828;
+  border: 1px solid #ffcdd2;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.cancelEnrollBtn:hover:not(:disabled) {
+  background: #ffebee;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(198, 40, 40, 0.1);
+}
+
+.cancelEnrollBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Кнопка записи */
+.enrollActionSection {
+  margin-bottom: 16px;
+}
+
+.enrollHint {
+  font-size: 13px;
+  font-weight: 500;
+  color: #555;
+  margin: 0 0 10px 0;
+}
+
+.enrollTriggerBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  justify-content: center;
+}
+
+.enrollTriggerBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+/* Все записаны */
+.allEnrolledNotice {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  background: #e8f5e9;
+  border-radius: 10px;
+  color: #2e7d32;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+  justify-content: center;
+}
+
+.allEnrolledIcon {
+  width: 18px;
+  height: 18px;
+  color: #2e7d32;
+}
+
+/* Нет студентов */
+.noStudentsNotice {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  background: #fff8e1;
+  border-radius: 10px;
+  color: #f57c00;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+  justify-content: center;
+}
+
+.noStudentsIcon {
+  width: 18px;
+  height: 18px;
+  color: #f57c00;
+}
+
+/* ===== МОДАЛЬНОЕ ОКНО ВЫБОРА СТУДЕНТА ===== */
+.enrollModalContent {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.enrollModalSubtitle {
+  font-size: 14px;
+  color: #555;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.enrollStudentList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.enrollStudentItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: #f8f9fa;
+  border: 2px solid #e9ecef;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.enrollStudentItem:hover {
+  background: #f0f2f5;
+  border-color: #d0d5dd;
+  transform: translateX(2px);
+}
+
+.enrollStudentItem:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+.enrollStudentItemSelected {
+  background: #eef2ff;
+  border-color: #6366f1;
+}
+
+.enrollStudentRadio {
+  flex-shrink: 0;
+}
+
+.radioSelected {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #6366f1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.radioCheck {
+  width: 12px;
+  height: 12px;
+  color: white;
+}
+
+.radioUnselected {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #d0d5dd;
+  background: white;
+}
+
+.enrollStudentItemIcon {
+  width: 20px;
+  height: 20px;
+  color: #6366f1;
+  flex-shrink: 0;
+}
+
+.enrollStudentItemName {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1a1a2e;
+  flex: 1;
+}
+
+.enrollModalActions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+/* Кнопки действий в детальном просмотре */
+.detailActions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.editBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #f7b557 0%, #e27921 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex: 1;
+  justify-content: center;
+}
+
+.editBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(226, 121, 33, 0.3);
+}
+
+.deleteBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: #fff0f0;
+  color: #c62828;
+  border: 1px solid #ffcdd2;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex: 1;
+  justify-content: center;
+}
+
+.deleteBtn:hover:not(:disabled) {
+  background: #ffebee;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(198, 40, 40, 0.2);
+}
+
+.deleteBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ===== АДАПТИВНОСТЬ ===== */
+@media (max-width: 1024px) {
+  .container {
+    padding: 16px;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .navSection {
+    justify-content: center;
+  }
+
+  .filtersSection {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 14px;
+    padding: 6px 12px;
+  }
+
+  .navBtn {
+    padding: 6px 12px;
+  }
+
+  .filterTrigger {
+    min-width: 140px;
+    padding: 8px 12px;
+  }
+
+  .filterText {
+    font-size: 12px;
+  }
+
+  .grid {
+    min-width: 700px;
+  }
+
+  .weekday {
+    font-size: 11px;
+  }
+
+  .dayNumber {
+    font-size: 16px;
+  }
+
+  .todayBadge {
+    font-size: 8px;
+    padding: 2px 6px;
+  }
+
+  .formRow {
+    grid-template-columns: 1fr;
+  }
+
+  .modal {
+    max-width: 95%;
+  }
+
+  .detailActions {
+    flex-direction: column;
+  }
+
+  .editBtn,
+  .deleteBtn {
+    width: 100%;
+  }
+  
+  .enrolledStudentCard {
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+  }
+  
+  .cancelEnrollBtn {
+    justify-content: center;
+  }
+  
+  .enrollModalActions {
+    flex-direction: column;
+  }
+}
+.teacherStudentsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.teacherStudentCard {
+  background: white;
+  border: 1px solid #eef2f6;
+  border-radius: 14px;
+  padding: 16px;
+  transition: all 0.2s;
+}
+
+.teacherStudentCard:hover {
+  border-color: #f7b557;
+  box-shadow: 0 4px 12px rgba(247, 181, 87, 0.1);
+}
+
+.teacherStudentHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.teacherStudentInfo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.teacherStudentIcon {
+  width: 20px;
+  height: 20px;
+  color: #f7b557;
+}
+
+.teacherStudentName {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1a1a2e;
+}
+
+.teacherStudentStatus {
+  display: flex;
+  align-items: center;
+}
+
+/* Бейджи посещаемости */
+.attendanceBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.statusPresent {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.statusAbsent {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.statusLate {
+  background: #fff3e0;
+  color: #e65100;
+}
+
+.statusPending {
+  background: #f5f5f5;
+  color: #666;
+}
+
+/* Секция действий преподавателя */
+.teacherActionRow {
+  margin-bottom: 12px;
+  padding: 12px;
+  background: #fafbfc;
+  border-radius: 10px;
+}
+
+.teacherActionRow:last-child {
+  margin-bottom: 0;
+}
+
+.teacherActionLabel {
+  font-size: 13px;
+  font-weight: 500;
+  color: #555;
+  margin-right: 10px;
+  white-space: nowrap;
+}
+
+/* Посещаемость */
+.attendanceSection {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.attendanceControls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.attendanceSelect {
+  padding: 6px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #333;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex: 1;
+  outline: none;
+}
+
+.attendanceSelect:focus {
+  border-color: #f7b557;
+  box-shadow: 0 0 0 2px rgba(247, 181, 87, 0.2);
+}
+
+.attendanceSaveBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  background: linear-gradient(135deg, #f7b557 0%, #e27921 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.attendanceSaveBtn:hover:not(:disabled) {
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(226, 121, 33, 0.3);
+}
+
+.attendanceSaveBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #ccc;
+}
+
+/* Секция оценок - просмотр */
+.gradeSummarySection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.gradeSummaryRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.gradeSummaryValues {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.gradeSummaryItem {
+  font-size: 13px;
+  color: #555;
+}
+
+.gradeSummaryItem strong {
+  color: #1a1a2e;
+  font-weight: 600;
+}
+
+.gradeNotSet {
+  font-size: 13px;
+  color: #999;
+  font-style: italic;
+}
+
+.gradeEditBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: white;
+  color: #f7b557;
+  border: 1px solid #f7b557;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.gradeEditBtn:hover {
+  background: #fff8f0;
+  transform: translateY(-1px);
+}
+
+.gradeFeedback {
+  padding: 10px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #eef2f6;
+}
+
+.feedbackLabel {
+  font-size: 12px;
+  font-weight: 500;
+  color: #888;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.feedbackText {
+  font-size: 13px;
+  color: #555;
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* Секция редактирования оценок */
+.gradeEditSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.gradeInputsRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.gradeInputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.gradeLabel {
+  font-size: 11px;
+  font-weight: 500;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.gradeInput {
+  padding: 8px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #333;
+  transition: all 0.2s;
+  outline: none;
+  width: 100%;
+}
+
+.gradeInput:focus {
+  border-color: #f7b557;
+  box-shadow: 0 0 0 2px rgba(247, 181, 87, 0.2);
+}
+
+.gradeInput::-webkit-inner-spin-button,
+.gradeInput::-webkit-outer-spin-button {
+  opacity: 1;
+}
+
+.gradeTextarea {
+  padding: 8px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #333;
+  transition: all 0.2s;
+  outline: none;
+  resize: vertical;
+  font-family: inherit;
+  width: 100%;
+}
+
+.gradeTextarea:focus {
+  border-color: #f7b557;
+  box-shadow: 0 0 0 2px rgba(247, 181, 87, 0.2);
+}
+
+.gradeActions {
+  display: flex;
+  gap: 8px;
+}
+
+.gradeSaveBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #f7b557 0%, #e27921 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex: 1;
+  justify-content: center;
+}
+
+.gradeSaveBtn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(226, 121, 33, 0.3);
+}
+
+.gradeSaveBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.gradeCancelBtn {
+  padding: 8px 16px;
+  background: #f5f5f5;
+  color: #666;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.gradeCancelBtn:hover:not(:disabled) {
+  background: #e0e0e0;
+}
+
+.gradeCancelBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ===== НОВЫЕ СТИЛИ ДЛЯ СЕКЦИИ ПРЕПОДАВАТЕЛЯ ===== */
+
+/* Заголовок секции с статистикой */
+.detailSectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.studentsStats {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.statsBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  background: white;
+  border: 1px solid #eef2f6;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #555;
+  white-space: nowrap;
+}
+
+.statsBadge:first-child {
+  color: #f7b557;
+  border-color: #f7b557;
+  background: #fff8f0;
+}
+
+/* Иконка для пустого состояния */
+.emptyIcon {
+  width: 32px;
+  height: 32px;
+  color: #ccc;
+  margin-bottom: 8px;
+}
+
+.emptyHint {
+  font-size: 12px;
+  color: #aaa;
+  margin-top: 4px;
+}
+
+/* Аватар студента */
+.studentAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #fef5e8 0%, #fff8f0 100%);
+  border: 2px solid #f7b557;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.studentAvatarIcon {
+  width: 20px;
+  height: 20px;
+  color: #f7b557;
+}
+
+/* Детали студента */
+.studentDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.studentBirthDate {
+  font-size: 11px;
+  color: #999;
+}
+
+.studentId {
+  font-size: 11px;
+  color: #aaa;
+}
+
+/* Группа статусов студента */
+.teacherStudentStatusGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Бейдж "Оценки выставлены" */
+.gradedBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  background: #e8f5e9;
+  color: #2e7d32;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* Маленькая иконка статуса */
+.statusIconSmall {
+  width: 12px;
+  height: 12px;
+}
+
+/* Быстрые массовые действия */
+.bulkActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px;
+  background: white;
+  border: 1px solid #eef2f6;
+  border-radius: 10px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.bulkActionsLabel {
+  font-size: 13px;
+  font-weight: 500;
+  color: #555;
+  margin-right: 4px;
+  white-space: nowrap;
+}
+
+.bulkActionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: white;
+  color: #555;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.bulkActionBtn:hover {
+  border-color: #f7b557;
+  color: #e27921;
+  background: #fff8f0;
+  transform: translateY(-1px);
+}
+
+.bulkActionBtn:first-of-type:hover {
+  border-color: #66bb6a;
+  color: #2e7d32;
+  background: #e8f5e9;
+}
+
+.bulkActionBtn:last-of-type:hover {
+  border-color: #ef5350;
+  color: #c62828;
+  background: #ffebee;
+}
+
+/* Быстрая статистика студента */
+.studentQuickStats {
+  display: flex;
+  gap: 16px;
+  padding: 10px 0;
+  border-top: 1px solid #f0f0f0;
+  border-bottom: 1px solid #f0f0f0;
+  margin: 12px 0;
+}
+
+.quickStatItem {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  text-align: center;
+}
+
+.quickStatLabel {
+  font-size: 10px;
+  font-weight: 500;
+  color: #aaa;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.quickStatValue {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a2e;
+}
+
+.quickStatValue:empty::after {
+  content: "—";
+  color: #ccc;
+}
+
+/* ===== АДАПТИВНОСТЬ ДЛЯ НОВЫХ СТИЛЕЙ ===== */
+@media (max-width: 768px) {
+  .detailSectionHeader {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .studentsStats {
+    justify-content: center;
+  }
+  
+  .teacherStudentHeader {
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+  }
+  
+  .teacherStudentInfo {
+    justify-content: center;
+  }
+  
+  .teacherStudentStatusGroup {
+    justify-content: center;
+  }
+  
+  .bulkActions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .bulkActionBtn {
+    justify-content: center;
+  }
+  
+  .studentQuickStats {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  
+  .quickStatItem {
+    min-width: 80px;
+  }
+  
+  .attendanceSection {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .attendanceControls {
+    flex-direction: row;
+  }
+  
+  .gradeSummaryRow {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+  
+  .gradeSummaryValues {
+    justify-content: center;
+  }
+  
+  .gradeEditBtn {
+    justify-content: center;
+  }
+}
+
+/* Статусы занятия */
+.statusScheduled {
+  color: #1976d2;
+  background: #e3f2fd;
+  padding: 4px 12px;
+  border-radius: 20px;
+  display: inline-block;
+  font-size: 13px;
+}
+
+.statusCompleted {
+  color: #2e7d32;
+  background: #e8f5e9;
+  padding: 4px 12px;
+  border-radius: 20px;
+  display: inline-block;
+  font-size: 13px;
+}
+
+.statusCancelled {
+  color: #c62828;
+  background: #ffebee;
+  padding: 4px 12px;
+  border-radius: 20px;
+  display: inline-block;
+  font-size: 13px;
+}
+
+.statusInProgress {
+  color: #e65100;
+  background: #fff3e0;
+  padding: 4px 12px;
+  border-radius: 20px;
+  display: inline-block;
+  font-size: 13px;
+}

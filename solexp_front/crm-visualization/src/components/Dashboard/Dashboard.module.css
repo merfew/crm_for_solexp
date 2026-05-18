@@ -1,0 +1,84 @@
+
+.dashboard {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 24px;
+  color: #1f2937;
+}
+
+.chartsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.chartsRow {
+  display: grid;
+  grid-template-columns: 1fr 2fr; /* Круговая меньше, столбчатая шире */
+  gap: 24px;
+}
+
+.chartContainer {
+  height: 350px;
+  position: relative;
+}
+
+.chartContainerSmall {
+  height: 300px;
+  position: relative;
+}
+
+.noData {
+  text-align: center;
+  padding: 48px;
+  color: #6b7280;
+  background: #f9fafb;
+  border-radius: 12px;
+}
+
+.statCard {
+  text-align: center;
+  padding: 20px;
+  background: #f9fafb;
+  border-radius: 12px;
+  transition: transform 0.2s;
+}
+
+.statCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.statValue {
+  display: block;
+  font-size: 28px;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 8px;
+}
+
+.statLabel {
+  display: block;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  padding: 20px;
+}
+
+@media (max-width: 768px) {
+  .chartsRow {
+    grid-template-columns: 1fr;
+  }
+}

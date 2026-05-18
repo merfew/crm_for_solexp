@@ -5,12 +5,14 @@ namespace solexp.Services
     public interface IClientService
     {
         // Расписание
+        Task<IEnumerable<Lesson>> GetScheduleAsync(DateTime? startDate = null, DateTime? endDate = null);
         Task<IEnumerable<Lesson>> GetScheduleAsync(int courseId);
         Task<IEnumerable<Lesson>> GetAvailableLessonsAsync(int courseId, DateTime? date = null);
 
         Task<IEnumerable<Student>> GetStudentsByClientIdAsync(int clientId);
 
         // Получение курсов
+        Task<IEnumerable<TeacherListItemDto>> GetAllTeachersAsync();
 
         Task<IEnumerable<Cours>> GetCoursesAsync();
 
@@ -20,11 +22,11 @@ namespace solexp.Services
         Task<IEnumerable<Lesson_student>> GetStudentEnrollmentsAsync(int studentId, int clientId);
 
         // Визуализация прогресса
-        Task<StudentProgressVisualizationDto> GetStudentProgressAsync(int studentId, int clientId);
-        Task<IEnumerable<LessonPerformanceDto>> GetStudentPerformanceAsync(int studentId, int clientId);
+        Task<StudentProgressVisualizationDto> GetStudentProgressAsync(int studentId, int clientId, int courseId);
+        Task<IEnumerable<LessonPerformanceDto>> GetStudentPerformanceAsync(int studentId, int clientId, int courseId);
 
         // История посещений
-        Task<IEnumerable<AttendanceHistoryDto>> GetAttendanceHistoryAsync(int studentId, int clientId);
+        Task<IEnumerable<AttendanceHistoryDto>> GetAttendanceHistoryAsync(int studentId, int clientId, int courseId);
 
         // История операций и баланс
         Task<decimal> GetCurrentBalanceAsync(int clientId);

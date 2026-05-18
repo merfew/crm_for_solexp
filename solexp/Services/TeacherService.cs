@@ -10,19 +10,53 @@ namespace solexp.Services
         private readonly ITeacherRepository _teacherRepository;
         private readonly IStudentRepository _studentRepository;
         private readonly IUserRepository _userRepository;
+        private readonly ICoursRepository _coursRepository;
 
         public TeacherService(
             ILessonRepository lessonRepository,
             ILessonStudentRepository lessonStudentRepository,
             ITeacherRepository teacherRepository,
             IStudentRepository studentRepository,
-            IUserRepository userRepository)
+            IUserRepository userRepository,
+            ICoursRepository coursRepository)
         {
             _lessonRepository = lessonRepository;
             _lessonStudentRepository = lessonStudentRepository;
             _teacherRepository = teacherRepository;
             _studentRepository = studentRepository;
             _userRepository = userRepository;
+            _coursRepository = coursRepository;
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // Курс Педагого
+        // ═══════════════════════════════════════════════════════════════
+
+        public async Task<IEnumerable<Cours>> GetAllCoursesAsync()
+        {
+            return await _coursRepository.GetAllAsync();
+        }
+
+        public async Task<IEnumerable<TeacherListItemDto>> GetAllTeachersAsync()
+        {
+            var teachers = await _teacherRepository.GetAllAsync();
+            var result = new List<TeacherListItemDto>();
+
+            foreach (var teacher in teachers)
+            {
+                var lessons = await _lessonRepository.GetByTeacherIdAsync(teacher.id_teacher);
+                result.Add(new TeacherListItemDto
+                {
+                    Id = teacher.id_teacher,
+                    FullName = teacher.full_name,
+                    Specialization = teacher.specialization,
+                    PhoneNumber = teacher.phone_number,
+                    TotalLessonsCount = lessons.Count(),
+                    UpcomingLessonsCount = lessons.Count(l => l.lesson_date >= DateTime.Now)
+                });
+            }
+
+            return result;
         }
 
         // ═══════════════════════════════════════════════════════════════
@@ -37,10 +71,10 @@ namespace solexp.Services
                 .OrderBy(l => l.lesson_date);
         }
 
-        public async Task<IEnumerable<Lesson>> GetScheduleByDateRangeAsync(
-            int teacherId, DateTime startDate, DateTime endDate)
+        public async Task<IEnumerable<Lesson>> GetScheduleByDateRangeAsync(DateTime startDate, DateTime endDate)
         {
-            var lessons = await _lessonRepository.GetByTeacherIdAsync(teacherId);
+            //var lessons = await _lessonRepository.GetByTeacherIdAsync(teacherId);
+            var lessons = await _lessonRepository.GetAllAsync();
             return lessons
                 .Where(l => l.lesson_date >= startDate && l.lesson_date <= endDate)
                 .OrderBy(l => l.lesson_date);
@@ -202,9 +236,20 @@ namespace solexp.Services
         // ЛИЧНЫЕ ДАННЫЕ
         // ═══════════════════════════════════════════════════════════════
 
-        public async Task<Teacher?> GetPersonalDataAsync(int teacherId)
+        public async Task<TeacherListItemDto?> GetPersonalDataAsync(int teacherId)
         {
-            return await _teacherRepository.GetByIdAsync(teacherId);
+            //return await _teacherRepository.GetByIdAsync(teacherId);
+            var teacher = await _teacherRepository.GetByIdAsync(teacherId);
+            var lessons = await _lessonRepository.GetByTeacherIdAsync(teacherId);
+            return new TeacherListItemDto
+            {
+                Id = teacher.id_teacher,
+                FullName = teacher.full_name,
+                Specialization = teacher.specialization,
+                PhoneNumber = teacher.phone_number,
+                TotalLessonsCount = lessons.Count(),
+                UpcomingLessonsCount = lessons.Count(l => l.lesson_date >= DateTime.Now)
+            };
         }
 
         public async Task<Teacher?> UpdatePersonalDataAsync(int teacherId, Teacher updatedData)
@@ -230,6 +275,49 @@ namespace solexp.Services
             teacher.phone_number = phoneNumber;
             await _teacherRepository.UpdateAsync(teacher);
             return true;
+        }
+
+        /// <summary>
+        /// Получить детальную информацию о занятии со списком студентов и их именами
+        /// </summary>
+        public async Task<LessonDetailsDto> GetLessonWithStudentsAsync(int lessonId)
+        {
+            var lesson = await _lessonRepository.GetByIdAsync(lessonId);
+            if (lesson == null)
+                throw new KeyNotFoundException("Занятие не найдено");
+
+            var lessonStudents = await _lessonStudentRepository.GetByLessonIdAsync(lessonId);
+
+            var studentAttendanceList = new List<StudentAttendanceDto>();
+
+            foreach (var ls in lessonStudents)
+            {
+                var student = await _studentRepository.GetByIdAsync(ls.id_student);
+
+                studentAttendanceList.Add(new StudentAttendanceDto
+                {
+                    IdStudent = ls.id_student,
+                    FullName = student?.full_name ?? $"Студент #{ls.id_student}",
+                    AttendanceStatus = ls.attendance_status,
+                    HomeworkPercent = ls.homework_percent,
+                    Score = ls.score,
+                    Feedback = ls.feedback
+                });
+            }
+
+            var result = new LessonDetailsDto
+            {
+                IdLesson = lesson.id_lesson,
+                Title = lesson.title,
+                Description = lesson.description,
+                LessonDate = lesson.lesson_date,
+                Classroom = lesson.classroom,
+                Homework = lesson.homework,
+                Status = lesson.status,
+                Students = studentAttendanceList
+            };
+
+            return result;
         }
     }
 }

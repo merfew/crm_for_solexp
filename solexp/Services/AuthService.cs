@@ -73,7 +73,8 @@ namespace solexp.Services
                 Token = token,
                 Email = user.email,
                 Role = role.role_name,
-                Name = name
+                Name = name,
+                UserId = user.id_user
             };
         }
 

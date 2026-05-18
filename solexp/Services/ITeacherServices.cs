@@ -4,9 +4,12 @@ namespace solexp.Services
 {
     public interface ITeacherService
     {
+        Task<IEnumerable<Cours>> GetAllCoursesAsync();
+        Task<IEnumerable<TeacherListItemDto>> GetAllTeachersAsync();
+        
         // Расписание
         Task<IEnumerable<Lesson>> GetPersonalScheduleAsync(int teacherId);
-        Task<IEnumerable<Lesson>> GetScheduleByDateRangeAsync(int teacherId, DateTime startDate, DateTime endDate);
+        Task<IEnumerable<Lesson>> GetScheduleByDateRangeAsync(DateTime startDate, DateTime endDate);
 
         // История занятий
         Task<IEnumerable<Lesson>> GetLessonHistoryAsync(int teacherId);
@@ -25,8 +28,10 @@ namespace solexp.Services
         Task<bool> GradeHomeworkAsync(int lessonId, int studentId, int homeworkPercent, int? score = null, string? feedback = null);
 
         // Личные данные
-        Task<Teacher?> GetPersonalDataAsync(int teacherId);
+        Task<TeacherListItemDto?> GetPersonalDataAsync(int teacherId);
         Task<Teacher?> UpdatePersonalDataAsync(int teacherId, Teacher updatedData);
         Task<bool> UpdatePhoneAsync(int teacherId, string phoneNumber);
+
+        Task<LessonDetailsDto> GetLessonWithStudentsAsync(int lessonId);
     }
 }

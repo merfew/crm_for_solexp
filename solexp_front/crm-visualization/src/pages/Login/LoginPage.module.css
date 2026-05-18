@@ -1,0 +1,288 @@
+/* src/pages/Login/LoginPage.module.css */
+
+/* === Цветовая палитра === */
+:root {
+  --cloud: #CDD0DB;
+  --azul: #9197AA;
+  --mimosa: #F7B557;
+  --orange: #E27921;
+  --aperol: #C1521E;
+  --green: #4CAF50;
+  --white: #FFFFFF;
+  --text-dark: #2D3142;
+  --text-muted: #6B7280;
+  --error: #DC2626;
+}
+
+.container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Фоновый градиент на основе Azul */
+.background {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    #9197AA 0%,
+    #A8AEC0 25%,
+    #B8BECF 50%,
+    #A8AEC0 75%,
+    #9197AA 100%
+  );
+  z-index: 0;
+}
+
+/* Декоративные круги на фоне */
+.background::before,
+.background::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.08;
+}
+
+.background::before {
+  width: 600px;
+  height: 600px;
+  background: var(--mimosa);
+  top: -200px;
+  right: -100px;
+}
+
+.background::after {
+  width: 400px;
+  height: 400px;
+  background: var(--orange);
+  bottom: -100px;
+  left: -100px;
+}
+
+.card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 420px;
+  padding: 48px 40px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+}
+
+/* Декоративный круг в карточке */
+.decorativeCircle {
+  position: absolute;
+  top: -60px;
+  right: -60px;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--mimosa), var(--orange));
+  opacity: 0.15;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--aperol);
+  margin: 0 0 8px 0;
+  letter-spacing: -0.5px;
+}
+
+.subtitle {
+  font-size: 15px;
+  color: var(--azul);
+  margin: 0;
+  font-weight: 500;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.input {
+  padding: 14px 16px;
+  border: 2px solid var(--cloud);
+  border-radius: 12px;
+  font-size: 15px;
+  color: var(--text-dark);
+  background: var(--white);
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.input::placeholder {
+  color: var(--azul);
+  opacity: 0.6;
+}
+
+.input:focus {
+  border-color: var(--mimosa);
+  box-shadow: 0 0 0 4px rgba(247, 181, 87, 0.15);
+}
+
+.input:hover:not(:focus) {
+  border-color: var(--azul);
+}
+
+.error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: rgba(220, 38, 38, 0.08);
+  border: 1px solid rgba(220, 38, 38, 0.2);
+  border-radius: 10px;
+  color: var(--error);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.errorIcon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--error);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.submitButton {
+  padding: 16px 24px;
+  background: linear-gradient(135deg, var(--mimosa), var(--orange));
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.submitButton::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--orange), var(--aperol));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.submitButton:hover:not(:disabled)::before {
+  opacity: 1;
+}
+
+.submitButton span,
+.submitButton::after {
+  position: relative;
+  z-index: 1;
+}
+
+.submitButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(226, 121, 33, 0.35);
+}
+
+.submitButton:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.submitButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Спиннер загрузки */
+.spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.footer {
+  margin-top: 24px;
+  text-align: center;
+}
+
+.footer p {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* Адаптивность */
+@media (max-width: 480px) {
+  .card {
+    margin: 16px;
+    padding: 32px 24px;
+    border-radius: 20px;
+  }
+
+  .title {
+    font-size: 28px;
+  }
+}
+
+/* Анимация появления */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card {
+  animation: fadeInUp 0.5s ease-out;
+}

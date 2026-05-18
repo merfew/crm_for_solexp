@@ -1,5 +1,6 @@
 ﻿using solexp.Model;
 using solexp.Repository;
+using System.Net.WebSockets;
 
 namespace solexp.Services
 {
@@ -35,11 +36,24 @@ namespace solexp.Services
         // РАСПИСАНИЕ ЗАНЯТИЙ
         // ═══════════════════════════════════════════════════════════════
 
+        public async Task<IEnumerable<Lesson>> GetScheduleAsync(DateTime? startDate = null, DateTime? endDate = null)
+        {
+            var lessons = await _lessonRepository.GetAllAsync();
+
+            if (startDate.HasValue)
+                lessons = lessons.Where(l => l.lesson_date >= startDate.Value);
+
+            if (endDate.HasValue)
+                lessons = lessons.Where(l => l.lesson_date <= endDate.Value);
+
+            return lessons.OrderBy(l => l.lesson_date);
+        }
+
         public async Task<IEnumerable<Lesson>> GetScheduleAsync(int courseId)
         {
             var lessons = await _lessonRepository.GetByCourseIdAsync(courseId);
             return lessons
-                .Where(l => l.lesson_date >= DateTime.Now.Date)
+                //.Where(l => l.lesson_date >= DateTime.Now.Date)
                 .OrderBy(l => l.lesson_date);
         }
 
@@ -127,6 +141,28 @@ namespace solexp.Services
         // ПОЛУЧЕНИЕ КУРСОВ
         // ═══════════════════════════════════════════════════════════════
 
+        public async Task<IEnumerable<TeacherListItemDto>> GetAllTeachersAsync()
+        {
+            var teachers = await _teacherRepository.GetAllAsync();
+            var result = new List<TeacherListItemDto>();
+
+            foreach (var teacher in teachers)
+            {
+                var lessons = await _lessonRepository.GetByTeacherIdAsync(teacher.id_teacher);
+                result.Add(new TeacherListItemDto
+                {
+                    Id = teacher.id_teacher,
+                    FullName = teacher.full_name,
+                    Specialization = teacher.specialization,
+                    PhoneNumber = teacher.phone_number,
+                    TotalLessonsCount = lessons.Count(),
+                    UpcomingLessonsCount = lessons.Count(l => l.lesson_date >= DateTime.Now)
+                });
+            }
+
+            return result;
+        }
+
         public async Task<IEnumerable<Cours>> GetCoursesAsync()
         {
             return await _coursRepository.GetAllAsync();
@@ -145,44 +181,56 @@ namespace solexp.Services
         // МОДУЛЬ ВИЗУАЛИЗАЦИИ ПРОГРЕССА
         // ═══════════════════════════════════════════════════════════════
 
-        public async Task<StudentProgressVisualizationDto> GetStudentProgressAsync(int studentId, int clientId)
+        public async Task<StudentProgressVisualizationDto> GetStudentProgressAsync(int studentId, int clientId, int courseId)
         {
             // Проверяем принадлежность ученика клиенту
             var student = await _studentRepository.GetByIdAsync(studentId);
             if (student == null || student.id_client != clientId)
                 throw new UnauthorizedAccessException("Ученик не найден или не принадлежит данному клиенту");
 
+            // Получаем все записи студента
             var records = await _lessonStudentRepository.GetByStudentIdAsync(studentId);
             var lessons = new List<Lesson>();
 
+            // Собираем уроки и фильтруем по курсу
             foreach (var record in records)
             {
                 var lesson = await _lessonRepository.GetByIdAsync(record.id_lesson);
-                if (lesson != null) lessons.Add(lesson);
+                if (lesson != null && lesson.id_course == courseId)
+                {
+                    lessons.Add(lesson);
+                }
             }
 
-            var attended = records.Count(r => r.attendance_status == "present" || r.attendance_status == "late");
-            var totalLessons = lessons.Count;
-            var completedLessons = lessons.Count(l => l.lesson_date < DateTime.Now.Date);
+            // Фильтруем records - оставляем только те, которые относятся к урокам из нужного курса
+            var courseLessonIds = lessons.Select(l => l.id_lesson).ToHashSet();
+            var courseRecords = records.Where(r => courseLessonIds.Contains(r.id_lesson)).ToList();
 
-            var avgHomework = records.Where(r => r.homework_percent.HasValue).Any()
-                ? records.Where(r => r.homework_percent.HasValue).Average(r => r.homework_percent.Value)
+            // Считаем статистику только по урокам курса
+            var attended = courseRecords.Count(r => r.attendance_status == "present" || r.attendance_status == "late");
+            var completedLessons = lessons.Count(l => l.status == "completed");
+
+            var avgHomework = courseRecords.Where(r => r.homework_percent.HasValue).Any()
+                ? courseRecords.Where(r => r.homework_percent.HasValue).Average(r => r.homework_percent.Value)
                 : 0;
 
-            var avgScore = records.Where(r => r.score.HasValue).Any()
-                ? records.Where(r => r.score.HasValue).Average(r => r.score.Value)
+            var avgScore = courseRecords.Where(r => r.score.HasValue).Any()
+                ? courseRecords.Where(r => r.score.HasValue).Average(r => r.score.Value)
                 : 0;
 
-            // Определяем курс (берём из первого занятия)
+            // Получаем информацию о курсе
             var courseName = "Не указан";
-            if (lessons.Any())
+            var totalLessons = 0;
+            var course = await _coursRepository.GetByIdAsync(courseId);
+            if (course != null)
             {
-                var course = await _coursRepository.GetByIdAsync(lessons.First().id_course);
-                if (course != null) courseName = course.name;
+                courseName = course.name;
+                totalLessons = (int)course.count_lesson;
             }
 
+            // Формируем историю уроков только по курсу
             var lessonHistory = new List<LessonProgressItemDto>();
-            foreach (var record in records.OrderByDescending(r => r.created_at))
+            foreach (var record in courseRecords.OrderByDescending(r => r.created_at))
             {
                 var lesson = lessons.FirstOrDefault(l => l.id_lesson == record.id_lesson);
                 lessonHistory.Add(new LessonProgressItemDto
@@ -212,7 +260,7 @@ namespace solexp.Services
             };
         }
 
-        public async Task<IEnumerable<LessonPerformanceDto>> GetStudentPerformanceAsync(int studentId, int clientId)
+        public async Task<IEnumerable<LessonPerformanceDto>> GetStudentPerformanceAsync(int studentId, int clientId, int courseId)
         {
             // Проверяем принадлежность
             var student = await _studentRepository.GetByIdAsync(studentId);
@@ -225,7 +273,8 @@ namespace solexp.Services
             foreach (var record in records.OrderByDescending(r => r.created_at))
             {
                 var lesson = await _lessonRepository.GetByIdAsync(record.id_lesson);
-                if (lesson == null) continue;
+                // Фильтруем только уроки из указанного курса
+                if (lesson == null || lesson.id_course != courseId) continue;
 
                 result.Add(new LessonPerformanceDto
                 {
@@ -245,7 +294,7 @@ namespace solexp.Services
         // ИСТОРИЯ ПОСЕЩЕНИЙ
         // ═══════════════════════════════════════════════════════════════
 
-        public async Task<IEnumerable<AttendanceHistoryDto>> GetAttendanceHistoryAsync(int studentId, int clientId)
+        public async Task<IEnumerable<AttendanceHistoryDto>> GetAttendanceHistoryAsync(int studentId, int clientId, int courseId)
         {
             // Проверяем принадлежность
             var student = await _studentRepository.GetByIdAsync(studentId);
@@ -258,7 +307,8 @@ namespace solexp.Services
             foreach (var record in records.OrderByDescending(r => r.created_at))
             {
                 var lesson = await _lessonRepository.GetByIdAsync(record.id_lesson);
-                if (lesson == null) continue;
+                // Фильтруем только уроки из указанного курса
+                if (lesson == null || lesson.id_course != courseId) continue;
 
                 var teacher = await _teacherRepository.GetByIdAsync(lesson.id_teacher);
 

@@ -379,6 +379,12 @@ namespace solexp.Services
 
         // ========== УПРАВЛЕНИЕ РАСПИСАНИЕМ (ЗАНЯТИЯМИ) ==========
 
+        public async Task<Lesson> GetLessonAsync(int lessonId)
+        {
+            var lesson = await _lessonRepository.GetByIdAsync(lessonId);
+            return lesson;
+        }
+
         public async Task<Lesson> CreateLessonAsync(CreateLessonDto dto)
         {
             var teacher = await _teacherRepository.GetByIdAsync(dto.TeacherId);
@@ -402,6 +408,7 @@ namespace solexp.Services
                 id_course = dto.CourseId,
                 lesson_date = dto.LessonDate,
                 duration_min = dto.DurationMinutes,
+                number_in_course = dto.NumberInCourse,
                 title = dto.Title,
                 description = dto.Description,
                 homework = dto.Homework,
@@ -435,6 +442,7 @@ namespace solexp.Services
 
             lesson.lesson_date = dto.LessonDate ?? lesson.lesson_date;
             lesson.duration_min = dto.DurationMinutes ?? lesson.duration_min;
+            lesson.number_in_course = dto.NumberInCourse ?? lesson.number_in_course;
             lesson.title = dto.Title ?? lesson.title;
             lesson.description = dto.Description ?? lesson.description;
             lesson.homework = dto.Homework ?? lesson.homework;

@@ -32,6 +32,21 @@ namespace solexp.Controllers
             //return int.Parse(User.FindFirst("id_teacher")?.Value ?? "0");
         }
 
+        [HttpGet("courses")]
+        public async Task<IActionResult> GetAllCours()
+        {
+            var courses = await _teacherService.GetAllCoursesAsync();
+            return Ok(courses);
+        }
+
+
+        [HttpGet("teachers")]
+        public async Task<IActionResult> GetAllTeachers()
+        {
+            var teachers = await _teacherService.GetAllTeachersAsync();
+            return Ok(teachers);
+        }
+
         // ═══════════════════════════════════════════════════════════════
         // РАСПИСАНИЕ
         // ═══════════════════════════════════════════════════════════════
@@ -39,6 +54,10 @@ namespace solexp.Controllers
         /// <summary>
         /// Получить личное расписание преподавателя
         /// </summary>
+        /// 
+
+
+
         [HttpGet("schedule")]
         public async Task<ActionResult<IEnumerable<Lesson>>> GetPersonalSchedule()
         {
@@ -64,8 +83,7 @@ namespace solexp.Controllers
         {
             try
             {
-                var teacherId = GetCurrentTeacherId();
-                var schedule = await _teacherService.GetScheduleByDateRangeAsync(teacherId, startDate, endDate);
+                var schedule = await _teacherService.GetScheduleByDateRangeAsync(startDate, endDate);
                 return Ok(schedule);
             }
             catch (Exception ex)
@@ -98,31 +116,31 @@ namespace solexp.Controllers
             }
         }
 
-        /// <summary>
-        /// Получить детали конкретного занятия
-        /// </summary>
-        [HttpGet("lessons/{lessonId}")]
-        public async Task<ActionResult<Lesson>> GetLessonDetails(int lessonId)
-        {
-            try
-            {
-                var lesson = await _teacherService.GetLessonDetailsAsync(lessonId);
-                if (lesson == null)
-                    return NotFound("Занятие не найдено");
+        ///// <summary>
+        ///// Получить детали конкретного занятия
+        ///// </summary>
+        //[HttpGet("lessons/{lessonId}")]
+        //public async Task<ActionResult<Lesson>> GetLessonDetails(int lessonId)
+        //{
+        //    try
+        //    {
+        //        var lesson = await _teacherService.GetLessonDetailsAsync(lessonId);
+        //        if (lesson == null)
+        //            return NotFound("Занятие не найдено");
 
-                // Проверка, что это занятие текущего преподавателя
-                var teacherId = GetCurrentTeacherId();
-                if (lesson.id_teacher != teacherId)
-                    return Forbid("У вас нет доступа к этому занятию");
+        //        // Проверка, что это занятие текущего преподавателя
+        //        var teacherId = GetCurrentTeacherId();
+        //        if (lesson.id_teacher != teacherId)
+        //            return Forbid("У вас нет доступа к этому занятию");
 
-                return Ok(lesson);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Ошибка при получении деталей занятия");
-                return StatusCode(500, "Внутренняя ошибка сервера");
-            }
-        }
+        //        return Ok(lesson);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError(ex, "Ошибка при получении деталей занятия");
+        //        return StatusCode(500, "Внутренняя ошибка сервера");
+        //    }
+        //}
 
         // ═══════════════════════════════════════════════════════════════
         // ПОСЕЩАЕМОСТЬ
@@ -381,6 +399,31 @@ namespace solexp.Controllers
             {
                 _logger.LogError(ex, "Ошибка при обновлении телефона");
                 return StatusCode(500, "Внутренняя ошибка сервера");
+            }
+        }
+
+        [HttpGet("lessons/{lessonId}")]
+        public async Task<ActionResult<LessonDetailsDto>> GetLessonDetails(int lessonId)
+        {
+            try
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(userIdClaim))
+                    return Unauthorized("Пользователь не авторизован");
+
+                // Получаем teacherId через UserService или репозиторий
+                // var teacher = await _teacherRepository.GetByUserIdAsync(int.Parse(userIdClaim));
+
+                var result = await _teacherService.GetLessonWithStudentsAsync(lessonId);
+                return Ok(result);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
             }
         }
     }

@@ -43,6 +43,7 @@ namespace solexp.Model
         public string Email { get; set; }
         public string Role { get; set; }
         public string Name { get; set; }
+        public int UserId { get; set; }
     }
 
     // Models/DTOs/UserDto.cs
@@ -102,6 +103,7 @@ namespace solexp.Model
             public int CourseId { get; set; }
             public DateTime LessonDate { get; set; }
             public int DurationMinutes { get; set; }
+            public int NumberInCourse { get; set; }
             public string Title { get; set; }
             public string? Description { get; set; }
             public string? Homework { get; set; }
@@ -112,6 +114,7 @@ namespace solexp.Model
         {
             public DateTime? LessonDate { get; set; }
             public int? DurationMinutes { get; set; }
+            public int? NumberInCourse { get; set; }
             public string? Title { get; set; }
             public string? Description { get; set; }
             public string? Homework { get; set; }
@@ -254,6 +257,7 @@ namespace solexp.Model
         public string? Title { get; set; }
         public string? Description { get; set; }
         public DateTime? LessonDate { get; set; }
+        public int NumberInCourse { get; set; }
         public string? Classroom { get; set; }
         public string? Homework { get; set; }
         public string? Status { get; set; }

@@ -10,6 +10,7 @@ namespace solexp.Model
         public int id_course { get; set; }
         public DateTime? lesson_date { get; set; }
         public int? duration_min { get; set; }
+        public int? number_in_course { get; set; }
         public string? title { get; set; }
         public string? description { get; set; }
         public string? homework { get; set; }

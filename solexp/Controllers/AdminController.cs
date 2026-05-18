@@ -268,6 +268,20 @@ namespace solexp.Controllers
 
         // ========== ”œ–¿¬À≈Õ»≈ –¿—œ»—¿Õ»≈Ã («¿Õﬂ“»ﬂÃ») ==========
 
+        [HttpGet("lesson/{lessonId}")]
+        public async Task<IActionResult> GetLesson(int lessonId)
+        {
+            try
+            {
+                await _adminService.GetLessonAsync(lessonId);
+                return Ok();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
         [HttpPost("lessons")]
         public async Task<IActionResult> CreateLesson([FromBody] CreateLessonDto dto)
         {
@@ -282,7 +296,7 @@ namespace solexp.Controllers
             }
         }
 
-        [HttpPut("lessons/{lessonId}")]
+        [HttpPatch("lessons/{lessonId}")]
         public async Task<IActionResult> UpdateLesson(int lessonId, [FromBody] UpdateLessonDto dto)
         {
             try

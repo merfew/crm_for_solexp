@@ -32,9 +32,23 @@ namespace solexp.Controllers
             return Ok(courses);
         }
 
+        [HttpGet("teachers")]
+        public async Task<IActionResult> GetAllTeachers()
+        {
+            var teachers = await _clientService.GetAllTeachersAsync();
+            return Ok(teachers);
+        }
+
         // ═══════════════════════════════════════════════════════════════
         // РАСПИСАНИЕ
         // ═══════════════════════════════════════════════════════════════
+
+        [HttpGet("schedule")]
+        public async Task<IActionResult> GetSchedule([FromQuery] DateTime? startDate, [FromQuery] DateTime? endDate)
+        {
+            var schedule = await _clientService.GetScheduleAsync(startDate, endDate);
+            return Ok(schedule);
+        }
 
         [HttpGet("schedule/{courseId}")]
         public async Task<ActionResult<IEnumerable<Lesson>>> GetSchedule(int courseId)
@@ -167,12 +181,12 @@ namespace solexp.Controllers
         // ═══════════════════════════════════════════════════════════════
 
         [HttpGet("students/{studentId}/progress")]
-        public async Task<ActionResult<StudentProgressDto>> GetStudentProgress(int studentId)
+        public async Task<ActionResult<StudentProgressDto>> GetStudentProgress(int studentId, int courseId)
         {
             try
             {
                 var clientId = GetCurrentClientId();
-                var progress = await _clientService.GetStudentProgressAsync(studentId, clientId);
+                var progress = await _clientService.GetStudentProgressAsync(studentId, clientId, courseId);
                 return Ok(progress);
             }
             catch (UnauthorizedAccessException ex)
@@ -187,12 +201,12 @@ namespace solexp.Controllers
         }
 
         [HttpGet("students/{studentId}/performance")]
-        public async Task<ActionResult<IEnumerable<LessonPerformanceDto>>> GetStudentPerformance(int studentId)
+        public async Task<ActionResult<IEnumerable<LessonPerformanceDto>>> GetStudentPerformance(int studentId, int courseId)
         {
             try
             {
                 var clientId = GetCurrentClientId();
-                var performance = await _clientService.GetStudentPerformanceAsync(studentId, clientId);
+                var performance = await _clientService.GetStudentPerformanceAsync(studentId, clientId, courseId);
                 return Ok(performance);
             }
             catch (UnauthorizedAccessException ex)
@@ -211,12 +225,12 @@ namespace solexp.Controllers
         // ═══════════════════════════════════════════════════════════════
 
         [HttpGet("students/{studentId}/attendance")]
-        public async Task<ActionResult<IEnumerable<AttendanceHistoryDto>>> GetAttendanceHistory(int studentId)
+        public async Task<ActionResult<IEnumerable<AttendanceHistoryDto>>> GetAttendanceHistory(int studentId, int courseId)
         {
             try
             {
                 var clientId = GetCurrentClientId();
-                var history = await _clientService.GetAttendanceHistoryAsync(studentId, clientId);
+                var history = await _clientService.GetAttendanceHistoryAsync(studentId, clientId, courseId);
                 return Ok(history);
             }
             catch (UnauthorizedAccessException ex)

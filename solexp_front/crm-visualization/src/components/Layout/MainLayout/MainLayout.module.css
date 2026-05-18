@@ -1,0 +1,42 @@
+/* src/components/Layout/MainLayout/MainLayout.module.css */
+
+.layout {
+  min-height: 100vh;
+  display: flex;
+  background: linear-gradient(135deg, #CDD0DB 0%, #B8BECF 50%, #CDD0DB 100%);
+}
+
+.main {
+  flex: 1;
+  margin-left: 260px;
+  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main.sidebarOpen {
+  margin-left: 260px;
+}
+
+.main.sidebarClosed {
+  margin-left: 72px;
+}
+
+.content {
+  flex: 1;
+  padding: 24px 32px;
+  overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+  .main,
+  .main.sidebarOpen,
+  .main.sidebarClosed {
+    margin-left: 0;
+  }
+
+  .content {
+    padding: 16px 20px;
+  }
+}

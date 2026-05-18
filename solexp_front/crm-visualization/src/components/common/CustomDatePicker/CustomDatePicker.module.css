@@ -1,0 +1,228 @@
+/* src/components/common/CustomDatePicker/CustomDatePicker.module.css */
+
+.container {
+  position: relative;
+  width: 100%;
+}
+
+.label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: #555;
+  margin-bottom: 6px;
+}
+
+.input {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 10px 14px;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #1a1a2e;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  text-align: left;
+}
+
+.input:hover {
+  border-color: #f7b557;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #f7b557;
+  box-shadow: 0 0 0 3px rgba(247, 181, 87, 0.15);
+}
+
+.placeholder {
+  color: #aaa;
+}
+
+.calendarIcon {
+  width: 18px;
+  height: 18px;
+  color: #888;
+  flex-shrink: 0;
+}
+
+/* === Календарь (fixed, поверх всего) === */
+.picker {
+  width: 320px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  border: 1px solid #f0f0f0;
+  overflow: hidden;
+  z-index: 9999;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Шапка */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #f7b557 0%, #e27921 100%);
+  color: white;
+}
+
+.monthYear {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.navBtn {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: none;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.navBtn:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.navBtn svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Дни недели */
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  padding: 12px 16px 4px;
+}
+
+.weekday {
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: #888;
+  padding: 4px;
+}
+
+/* Дни */
+.days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  padding: 4px 16px 12px;
+}
+
+.emptyDay {
+  aspect-ratio: 1;
+}
+
+.day {
+  aspect-ratio: 1;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #1a1a2e;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.day:hover {
+  background: #fff3e0;
+}
+
+.today {
+  color: #e27921;
+  font-weight: 700;
+  position: relative;
+}
+
+.today::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #e27921;
+}
+
+.selected {
+  background: linear-gradient(135deg, #f7b557 0%, #e27921 100%);
+  color: white;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(226, 121, 33, 0.3);
+}
+
+.selected:hover {
+  background: linear-gradient(135deg, #f7b557 0%, #e27921 100%);
+  opacity: 0.9;
+}
+
+/* Футер */
+.footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-top: 1px solid #f0f0f0;
+  background: #fafafa;
+}
+
+.todayBtn,
+.clearBtn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.todayBtn {
+  background: linear-gradient(135deg, #f7b557 0%, #e27921 100%);
+  color: white;
+}
+
+.todayBtn:hover {
+  opacity: 0.9;
+  box-shadow: 0 2px 8px rgba(226, 121, 33, 0.3);
+}
+
+.clearBtn {
+  background: #f5f5f5;
+  color: #666;
+}
+
+.clearBtn:hover {
+  background: #e0e0e0;
+}
+
