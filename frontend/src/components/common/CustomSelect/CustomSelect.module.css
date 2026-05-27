@@ -1,0 +1,124 @@
+.wrapper {
+  position: relative;
+  width: 100%;
+  user-select: none;
+}
+
+.trigger {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 10px 36px 10px 14px;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 14px;
+  font-family: inherit;
+  color: #1a1a2e;
+  background: white;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  text-align: left;
+}
+
+.trigger:hover:not(:disabled) {
+  border-color: #f7b557;
+}
+
+.trigger:focus,
+.open {
+  border-color: #f7b557;
+  box-shadow: 0 0 0 2px rgba(247, 181, 87, 0.2);
+}
+
+.trigger:disabled {
+  background: #f5f5f5;
+  color: #999;
+  cursor: not-allowed;
+}
+
+.trigger:disabled ~ .arrow {
+  color: #bbb;
+}
+
+.label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.arrow {
+  position: absolute;
+  right: 10px;
+  width: 16px;
+  height: 16px;
+  color: #f7b557;
+  pointer-events: none;
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+
+.arrowUp {
+  transform: rotate(180deg);
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #e8e8e8;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+  z-index: 9999;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.option {
+  padding: 10px 14px;
+  font-size: 14px;
+  font-family: inherit;
+  color: #1a1a2e;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.option:hover {
+  background: rgba(247, 181, 87, 0.18);
+  color: #c96a00;
+}
+
+.optionActive {
+  background: rgba(247, 181, 87, 0.22);
+  color: #c96a00;
+  font-weight: 500;
+}
+
+.optionDisabled {
+  color: #bbb;
+  cursor: not-allowed;
+}
+
+.optionDisabled:hover {
+  background: none;
+  color: #bbb;
+}
+
+/* sm variant — компактный режим (посещаемость и т.п.) */
+.sm .trigger {
+  padding: 6px 32px 6px 10px;
+  font-size: 13px;
+  border-radius: 8px;
+}
+
+.sm .dropdown {
+  border-radius: 8px;
+}
+
+.sm .option {
+  padding: 7px 10px;
+  font-size: 13px;
+}

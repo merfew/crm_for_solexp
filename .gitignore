@@ -5,3 +5,7 @@ obj/
 *.suo
 appsettings.json
 appsettings.*.json
+
+# Documentation and AI instructions
+doc/
+CLAUDE.md
